@@ -33,3 +33,7 @@ a,
     padding: 0 2rem;
   }
 } */
+
+:placeholder-shown{
+  font-style: italic;
+}

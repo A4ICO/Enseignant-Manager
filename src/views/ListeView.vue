@@ -1,23 +1,42 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted , watch } from 'vue'
 import { EnseignantApi , fetchTest } from '@/service/api.js'
 
+const querySearch = ref('')
 const enseignants = ref([])   // tableau vide au début
+const filteredEnseignants = ref([])
+
+// apply filter on search
+
+watch(querySearch, (newQuery) => {
+  if (newQuery !== '') {
+    filteredEnseignants.value = enseignants.value.filter(user =>
+      user.nom.toLowerCase().includes(newQuery.toLowerCase())
+    )
+  } else {
+    filteredEnseignants.value = enseignants.value
+  }
+} , {immediate : true})
+
+// complete the list
+async function fillList(){
+  const data = await EnseignantApi.getAll()
+    enseignants.value = data;
+  console.log("data reçue :", data)
+}
+
 
 // Quand la page charge >> récupère la liste
 onMounted(async () => {
-  const data = await EnseignantApi.getAll()
-  console.log("data reçue :", data) 
-  enseignants.value = data;
+fillList();
 // const test = await fetchTest.test();
 })
 </script>
 
-
 <template>
   <div>
-<input type="search" class="form-control rounded-pill px-3 mb-2 w-25" placeholder="Search...">
-   
+<input type="search" v-model="querySearch" class="form-control rounded-pill px-3 mb-2 w-25" placeholder="Search...">
+   <p>{{ filteredEnseignants.nom }}</p>
     <div class="container-md">
         <div class="row">
             <div class="col-lg-12">
@@ -36,9 +55,9 @@ onMounted(async () => {
                 <tr v-for="ens in enseignants">
                     <td>{{ ens.matricule }}</td>
                     <td>{{ ens.nom }}</td>
+                    <td>{{ ens.taux_horaire }}</td>
                     <td>{{ ens.nombre_heures }}</td>
                     <td>{{ ens.prestation }}</td>
-                    <td>{{ ens.taux_horaire }}</td>
                     <td>
                         <button type="button" class="btn btn-danger w-75" >Delete</button>
                     </td>

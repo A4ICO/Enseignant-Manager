@@ -1,9 +1,12 @@
 <template>
-  <div class="form-container">
+
+  <h3 class="page-title">Ajouter une nouvelle enregistrement</h3>
+
+  <div class="form-container rounded-5 border m-5">
     <form @submit.prevent="submitEnseignant" class="student-form">
 
       <div v-for="field in fields" :key="field.key" class="form-group">
-        <label :for="field.key">{{ field.placeholder }}</label>
+        <label :for="field.key">{{ field.label }}</label>
         <input
           :id="field.key"
           v-model="formData[field.key]"
@@ -27,10 +30,10 @@ import { ref, reactive } from 'vue'
 import { EnseignantApi } from '@/service/api'
 
 const fields = [
-  { key: 'matricule',     placeholder: 'Matricule',     type: 'text'   },
-  { key: 'nom',           placeholder: 'Nom',           type: 'text'   },
-  { key: 'taux_horaire',  placeholder: 'Taux Horaire',  type: 'number' },
-  { key: 'nombre_heures', placeholder: 'Nombre Heures', type: 'number' },
+  { key: 'matricule',     placeholder: 'E-1234',            type: 'text'   , label : 'Matricule' },
+  { key: 'nom',           placeholder: 'Ex : Randria',           type: 'text'   , label : 'Nom'  },
+  { key: 'taux_horaire',  placeholder: '18',  type: 'number' , label : 'Taux Horaire'},
+  { key: 'nombre_heures', placeholder: '7', type: 'number' , label: 'Nombre Heures'},
 ]
 
 const formData = reactive({
@@ -45,10 +48,14 @@ const message     = ref('')
 const messageType = ref('')
 
 async function submitEnseignant() {
-  loading.value = true
-  message.value = ''
+  message.value = '';
 
-  try {
+  if(formData.matricule != '' 
+  && formData.nom != ''
+  && formData.taux_horaire  != ''
+  && formData.nombre_heures != ''){
+    try {
+        loading.value = true
     const res = await EnseignantApi.create(
       formData.matricule,
       formData.nom,
@@ -57,17 +64,22 @@ async function submitEnseignant() {
     )
 
     message.value     = res.message
-    messageType.value = res.message.includes('réussie') ? 'success' : 'error'
+    messageType.value = res.message.includes('succes') ? 'success' : 'error'
 
     if (res.message.includes('réussie')) {
       resetForm()
     }
 
   } catch (e) {
-    message.value     = 'Erreur de connexion'
-    messageType.value = 'error'
+    message.value     = 'Erreur de connexion';
+    messageType.value = 'error';
   } finally {
     loading.value = false
+  }
+  }
+  else{
+    message.value =  'Completer tous';
+    messageType.value = 'error';
   }
 }
 
