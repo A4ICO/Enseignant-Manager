@@ -1,3 +1,5 @@
 <template>
-  <div><h1>Connexion</h1></div>
+  <div>
+    <h3>Connexion</h3>
+  </div>
 </template>

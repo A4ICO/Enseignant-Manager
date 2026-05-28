@@ -1,7 +1,7 @@
-const BASE_URL = "http://localhost/enseignant-app-spa/api/enseignants";
+const BASE_URL = 'http://localhost/enseignant-app-spa/api/enseignants/';
+const URLTest = 'http://localhost/enseignant-app-spa/api/enseignants/create.php';
 
-
-async function request(endpoint, method = "GET", body = null) {
+async function request(endpoint = '', method = "GET", body = null) {
 
     // consere the method and  into an object
   const options = {
@@ -13,26 +13,55 @@ async function request(endpoint, method = "GET", body = null) {
     options.body = JSON.stringify(body);
   }
  
-  const response = await fetch(`${BASE_URL}/${endpoint}`, options);
-  const data = await response.json();
-  return data;
+try
+    {
+        const response = await fetch(`${BASE_URL}${endpoint}`, options);
+        if(!response.ok)
+        {
+            throw new Error(`Error HTTP : ${response.status}`);
+        }
+        const data = await response.json();
+        return data;
+    }
+catch(error)
+        {
+            console.error("Erreur lors de la requête :", error.message);
+        }
 }
 
 
+
+async function fetchData() {
+ try {
+   const response = await fetch(URLTest);
+   if (!response.ok) {
+     throw new Error('Network response was not ok');
+   }
+   const data = await response.json();
+   console.log(data);
+ } catch (error) {
+   console.error('Error:', error);
+ }
+}
+
+export const fetchTest= {
+    test : () => fetchData(),
+};
+
 export const EnseignantApi = 
 {
-    getAll : ()=>
-        request("read.php"),
+    getAll : () =>
+        request(),
 
     create: (matricule, nom, taux_horaire, nombre_heures) => 
-        request("create.php" , "POST" , {matricule, nom, taux_horaire, nombre_heures}),
+        request("", "POST" , {matricule, nom, taux_horaire, nombre_heures}),
 
     delete: (matricule) =>
-        request("delete.php" , "POST" , {matricule}),
+        request(`${matricule}` , "DELETE"),
 
     update: (matricule, nom, taux_horaire, nombre_heures) =>
-        request("update.php","POST",{matricule, nom, taux_horaire, nombre_heures}) ,
+        request( `${matricule}`,"PUT",{nom, taux_horaire, nombre_heures}) ,
 
      getBilan: () =>
-    request("enseignants/bilan.php"),
+        request(),
 }

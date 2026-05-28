@@ -1,43 +1,59 @@
 <script setup>
 import { ref, onMounted } from 'vue'
-import { EnseignantApi } from '@/service/api.js'
+import { EnseignantApi , fetchTest } from '@/service/api.js'
 
-const liste = ref([])   // tableau vide au début
+const enseignants = ref([])   // tableau vide au début
 
-// Quand la page charge → récupère la liste
+// Quand la page charge >> récupère la liste
 onMounted(async () => {
-  liste.value = await EnseignantApi.getAll()
+  const data = await EnseignantApi.getAll()
+  console.log("data reçue :", data) 
+  enseignants.value = data;
+// const test = await fetchTest.test();
 })
 </script>
 
 
 <template>
   <div>
-    <h1>Liste des Enseignants</h1>
-           <table>
- <caption>Monthly Savings</caption>
- <thead>
-   <tr>
-     <th>Month</th>
-     <th>Savings</th>
-   </tr>
- </thead>
- <tbody>
-   <tr>
-     <td>January</td>
-     <td>$100</td>
-   </tr>
-   <tr>
-     <td>February</td>
-     <td>$80</td>
-   </tr>
- </tbody>
- <tfoot>
-   <tr>
-     <td>Total</td>
-     <td>$180</td>
-   </tr>
- </tfoot>
-</table>
+<input type="search" class="form-control rounded-pill px-3 mb-2 w-25" placeholder="Search...">
+   
+    <div class="container-md">
+        <div class="row">
+            <div class="col-lg-12">
+        <table class="table table-striped table-bordered">
+           <thead>
+                <tr>
+                <th>Matricule</th>
+                <th>Nom</th>
+                <th>Taux Horaire</th>
+                <th>Nombre Heures</th>
+                <th>Prestation</th>
+                <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="ens in enseignants">
+                    <td>{{ ens.matricule }}</td>
+                    <td>{{ ens.nom }}</td>
+                    <td>{{ ens.nombre_heures }}</td>
+                    <td>{{ ens.prestation }}</td>
+                    <td>{{ ens.taux_horaire }}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger w-75" >Delete</button>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-primary w-75">Edit</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+</div>
+
     </div>
 </template>
+
+
+
