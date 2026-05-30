@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted , watch } from 'vue'
+import { ref, onMounted , watch, reactive } from 'vue'
 import { EnseignantApi , fetchTest } from '@/service/api.js'
 import dialog from '@/components/dialog'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
@@ -7,6 +7,7 @@ import ConfirmDialog from '@/components/ConfirmDialog.vue'
 const querySearch = ref('')
 const enseignants = ref([])   // an empty array for the first time
 const filteredEnseignants = ref([]) // to store the filtered list 
+
 
 // delete feedback
 var databaseMessage = ref([]); 
@@ -32,7 +33,6 @@ async function fillList(){
 
  // delete one record in the list 
 async function deleteOne(matricule) {
-
  const confirmed = await dialog.prompt("Are you sure you want to delete?");
 
   if (confirmed) {
@@ -51,15 +51,23 @@ fillList();
 </script>
 
 <template>
-  <div>
-<input type="search" v-model="querySearch" class="form-control rounded-pill px-3 mb-2 w-25" placeholder="Search...">
-   <!-- <p v-for="value in filteredEnseignants">{{ value.nom }}</p> -->
-   <ConfirmDialog /> 
+
+<div  class="w-100 m-2" style="background-color: white; position: sticky ; z-index: 1000 ; top: 100px; display: flex;justify-content: space-between;">
+  <input  type="text" 
+  v-model="querySearch" 
+  class="form-control rounded-pill px-3 mb-2 w-25"
+  style="position: absolute;top: 0;"
+   placeholder="Search..."
+   >
+   </div>
+   <ConfirmDialog/>    
+<div>
+
    <div class="container-md">
         <div class="row">
             <div class="col-lg-12">
         <table class="table table-striped table-bordered border-2">
-           <thead>
+           <thead style="position: sticky ; z-index: 10 ; top: 140px;">
                 <tr>
                 <th>Matricule</th>
                 <th>Nom</th>
@@ -73,11 +81,11 @@ fillList();
                 <tr v-for="ens in filteredEnseignants">
                     <td>{{ ens.matricule }}</td>
                     <td>{{ ens.nom }}</td>
-                    <td>{{ ens.taux_horaire }}</td>
-                    <td>{{ ens.nombre_heures }}</td>
-                    <td>{{ ens.prestation }}</td>
+                    <td>{{ ens.taux_horaire }} H</td>
+                    <td>{{ ens.nombre_heures }} H</td>
+                    <td>{{ ens.prestation }} Ar</td>
                     <td>
-                        <button @click="deleteOne(ens.matricule)" type="button" class="btn btn-danger w-75" >Delete</button>
+                        <button @click="deleteOne(ens.matricule) ;functionFocus() "  type="button" class="btn btn-danger w-75" >Delete</button>
                     </td>
                     <td>
                         <button type="button" class="btn btn-primary w-75">Edit</button>
