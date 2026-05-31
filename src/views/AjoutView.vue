@@ -19,7 +19,7 @@
         {{ loading ? 'Enregistrement...' : 'Enregistrer' }}
       </button>
 
-      <p v-if="message" :class="messageType">{{ message }}</p>
+      <p v-if="message" :class="messageType" class="fade-message">{{ message }}</p>
 
     </form>
   </div>
@@ -63,26 +63,36 @@ async function submitEnseignant() {
       formData.nombre_heures
     )
 
-    message.value     = res.message
-    messageType.value = res.message.includes('succes') ? 'success' : 'error'
+    showMessage(res.message ,
+    res.message.includes('succes') ? 'success' : 'error');
+  
 
     if (res.message.includes('réussie')) {
       resetForm()
     }
 
   } catch (e) {
-    message.value     = 'Erreur de connexion';
-    messageType.value = 'error';
+    showMessage('Erreur de connexion' , error);
   } finally {
     loading.value = false
   }
   }
   else{
-    message.value =  'Completer tous';
-    messageType.value = 'error';
+    showMessage('Completer tous' , 'error')
   }
 }
 
+//show message (feed-back) from server or form
+function showMessage(msg , type){
+  message.value     = msg
+  messageType.value = type
+  setTimeout(() => {
+    message.value     = ''
+    messageType.value = ''
+  }, 5000)
+}
+
+ // reset form
 function resetForm() {
   formData.matricule     = ''
   formData.nom           = ''

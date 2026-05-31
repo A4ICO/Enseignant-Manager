@@ -7,7 +7,7 @@ import NavBar from './components/NavBar.vue';
   <header class="w-100 sticky-top">
     <NavBar></NavBar>
   </header>
-
+  
   <main class="container mt-4">
     <RouterView />
   </main>

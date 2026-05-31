@@ -37,3 +37,13 @@ a,
 :placeholder-shown{
   font-style: italic;
 }
+
+.fade-message {
+  animation: fadeout 5s forwards;
+}
+
+@keyframes fadeout {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }   /* stays visible for 3.5s */
+  100% { opacity: 0; }   /* fades out over last 1.5s */
+}
